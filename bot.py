@@ -1,6 +1,9 @@
 import hikari
+import os
+from dotenv import load_dotenv
 
-bot = hikari.GatewayBot("")
+load_dotenv()
+bot = hikari.GatewayBot(os.getenv('token'), intents=hikari.Intents.ALL) # Token
 
 @bot.listen(hikari.StartedEvent)
 async def start_hello(event):
