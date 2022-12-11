@@ -1,13 +1,37 @@
-import hikari
 import os
+import hikari
+import lightbulb
 from dotenv import load_dotenv
 
 load_dotenv()
-bot = hikari.GatewayBot(os.getenv('token'), intents=hikari.Intents.ALL) # Token
+bot = lightbulb.BotApp(
+    os.getenv('token'),
+    intents=hikari.Intents.ALL,
+    ) # Token
 
 @bot.listen(hikari.StartedEvent)
 async def start_hello(event):
     print("Started...")
+
+@bot.command()
+@lightbulb.option("text", "Le texte a dire", str, required=True)
+@lightbulb.command("say", "Dit ce que tu veux")
+# @lightbulb.implements(lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def command_say(ctx : lightbulb.SlashCommand) -> None:
+    await ctx.respond(ctx.options.text)
+
+
+
+@bot.command()
+@lightbulb.command("cfq", "Demande ça fait quoi")
+# @lightbulb.implements(lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def command_cfq(ctx : lightbulb.SlashCommand) -> None:
+    await ctx.respond("ça fait quoi ? @everyone")
+
+
+
 
 @bot.listen(hikari.GuildMessageCreateEvent)
 async def print_message(event):
