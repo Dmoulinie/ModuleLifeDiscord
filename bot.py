@@ -1,5 +1,6 @@
 import hikari
-bot = hikari.GatewayBot(token='NjUxNTk3OTQ2MDY3ODc3ODg4.XecN4A.hb-MBfgvndOBGa9VHgXDAP_4YqU')
+
+bot = hikari.GatewayBot("")
 
 @bot.listen(hikari.StartedEvent)
 async def start_hello(event):
