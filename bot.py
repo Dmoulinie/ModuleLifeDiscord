@@ -36,12 +36,15 @@ async def start_hello(event):
 async def command_say(ctx : lightbulb.SlashCommand) -> None:
     await ctx.respond(ctx.options.text)
 
-    @__BOT__.command()
-    @lightbulb.command("cfq", "Demande ça fait quoi")
-    # @lightbulb.implements(lightbulb.SlashCommand)
-    @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-    async def command_cfq(ctx : lightbulb.SlashCommand) -> None:
-        await ctx.respond("ça fait quoi ? @everyone", mentions_everyone=True)
+
+
+
+@__BOT__.command()
+@lightbulb.command("cfq", "Demande ça fait quoi")
+# @lightbulb.implements(lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def command_cfq(ctx : lightbulb.SlashCommand) -> None:
+    await ctx.respond("ça fait quoi ? @everyone", mentions_everyone=True)
 
 @__BOT__.listen(hikari.GuildMessageCreateEvent)
 async def print_message(event):
