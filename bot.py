@@ -3,6 +3,18 @@ import hikari
 import lightbulb
 import miru
 from dotenv import load_dotenv
+import json
+
+
+#GLOBAL PATH
+__FILE_PATH__ = os.path.dirname(os.path.abspath(__file__))
+
+__SRC_PATH__ = os.path.join(__FILE_PATH__, 'src')
+
+__CLASS_PATH__ = os.path.join(__FILE_PATH__, 'classes')
+
+__RESPONSE_PATH__ = os.path.join(__SRC_PATH__, 'response.json')
+
 
 
 load_dotenv()
@@ -26,13 +38,12 @@ async def command_say(ctx : lightbulb.SlashCommand) -> None:
 
 
 
-@__BOT__.command()
-@lightbulb.command("cfq", "Demande ça fait quoi")
-# @lightbulb.implements(lightbulb.SlashCommand)
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def command_cfq(ctx : lightbulb.SlashCommand) -> None:
-    await ctx.respond("ça fait quoi ? @everyone",mentions_everyone=True)
-    # await ctx.respond("ça fait quoi ?" + ctx.user.default_role.mention)
+    @__BOT__.command()
+    @lightbulb.command("cfq", "Demande ça fait quoi")
+    # @lightbulb.implements(lightbulb.SlashCommand)
+    @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+    async def command_cfq(ctx : lightbulb.SlashCommand) -> None:
+        await ctx.respond("ça fait quoi ? @everyone", mentions_everyone=True)
 
 @__BOT__.listen(hikari.GuildMessageCreateEvent)
 async def print_message(event):
