@@ -86,11 +86,15 @@ async def print_message(event):
             await event.message.respond(response)
         elif "quoi" in event.message.content:
             message = str(event.content).lower()
+            messageLastWord = message.split(" ")[-1]
             listCharacters = ["?", ".", "§", "/", "!", ",", ";", " "]
             for char in listCharacters:
                 message = message.replace(char, "")
-            if message.endswith("quoi"):
+            #TODO : azequoiaze -> feur (a fix)
+            #TODO quooooooi -> pas feur (remove doublon)
+            if message.endswith("quoi") or messageLastWord.find("quoi") != -1:
                 await event.message.respond("feur",)
+            
 
 if __name__ == "__main__":
     __BOT__.run()
