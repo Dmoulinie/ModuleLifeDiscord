@@ -36,8 +36,6 @@ async def start_hello(event):
 async def command_say(ctx : lightbulb.SlashCommand) -> None:
     await ctx.respond(ctx.options.text)
 
-
-
     @__BOT__.command()
     @lightbulb.command("cfq", "Demande ça fait quoi")
     # @lightbulb.implements(lightbulb.SlashCommand)
@@ -50,36 +48,8 @@ async def print_message(event):
     if not event.is_human:
         return
     if event.content:
-        switcher = {
-                "yo": "ya",
-                "ya": "yo",
-                "pute": "salope !",
-                "salope": "pute !",
-                "tamere": "ton père !",
-                "tonpere": "ta mère !",
-                "toncousin": "Ta cousine !",
-                "toncouz": "Ta cousine !",
-                "tacousine": "Ton Cousin !",
-                "tacouz": "Ton Cousin !",
-                "tasoeur": "Ton Frere !",
-                "tonfrere": "Ta Soeur !",
-                "tonpapi": "Ta Grand-Mère !",
-                "tasoeur": "Ton Frère !",
-                "nani": "MAMIE??!",
-                "MAMIE": "Nani?",
-                "oui": "non",
-                "non": "oui",
-                "monf ta pas": "des restants ??",
-                "toncousin": "Ta Cousine !",
-                "tonchien": "Ta Chienne !",
-                "tonchat": "TAchxxxx",
-                "rick": "Roll",
-                ":)": ":(",
-                "iciC": "OUEGOA",
-                "xoxo": "Bisoux",
-                "bisou": "XoXo",
-                ":slight_smile:": ":(",
-            }
+        with open(__RESPONSE_PATH__, 'r') as f:
+            switcher = json.load(f)
 
         response = switcher.get(str(event.content).lower())
         if response:
@@ -95,6 +65,25 @@ async def print_message(event):
             if message.endswith("quoi") or messageLastWord.find("quoi") != -1:
                 await event.message.respond("feur",)
             
+
+
+
+@__BOT__.command() #TODO ajouter un CRUD
+@lightbulb.option("reponse", "La réponse du BOT", str, required=True)
+@lightbulb.option("declencheur", "Votre mot déclencheur", str, required=True)
+@lightbulb.command("ajout", "Vos mots sous ce format : mot / reponse ")
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def test(ctx):
+    declencheur = ctx.options.declencheur
+    reponse = ctx.options.reponse
+    await ctx.respond(str(declencheur)+' : '+ str(reponse))
+    with open(__RESPONSE_PATH__, 'r',encoding="utf8") as f:
+        switcher = json.load(f)
+    switcher[declencheur] = reponse
+    with open(__RESPONSE_PATH__, 'w',encoding="utf8") as f:
+        json.dump(switcher, f, indent=4, ensure_ascii=False)
+
+
 
 if __name__ == "__main__":
     __BOT__.run()
