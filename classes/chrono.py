@@ -31,15 +31,3 @@ class Chronometre:
         return self.elapsed
 
 chrono = Chronometre()
-
-chrono.begin()
-time.sleep(2)
-chrono.stop()
-print(chrono.getElapsedTime())
-
-chrono.pause()
-time.sleep(2)
-chrono.resume()
-time.sleep(2)
-chrono.stop()
-print(chrono.getElapsedTime())
