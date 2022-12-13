@@ -1,4 +1,4 @@
 /env
 env_load.txt
-.env
-test.py
+src/.env
+tests
