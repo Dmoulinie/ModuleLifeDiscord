@@ -46,23 +46,28 @@ Si le message contient "quoi" alors le bot repond "feur"
 """
 @__BOT__.listen(hikari.GuildMessageCreateEvent)
 async def print_message(event):
+    message = event.content.lower()
+
     if not event.is_human:
         return
     if event.content:
         with open(__RESPONSE_PATH__, 'r') as f:
             switcher = json.load(f)
 
-        response = switcher.get(str(event.content).lower())
+        response = switcher.get(str(message))
+        message = "".join(dict.fromkeys(message))
         if response:
             await event.message.respond(response)
-        elif "quoi" in event.message.content:
-            message = str(event.content).lower()
+            
+        elif "quoi" in message:
             messageLastWord = message.split(" ")[-1]
             listCharacters = ["?", ".", "§", "/", "!", ",", ";", " "]
             for char in listCharacters:
                 message = message.replace(char, "")
             #TODO : azequoiaze -> feur (a fix)
             #TODO quooooooi -> pas feur (remove doublon)
+            #messageLastWord.find("quoi") != -1 > quoiiiiiiiii -> feur
+            #message.endswith("quoi") > quoi -> feur
             if message.endswith("quoi") or messageLastWord.find("quoi") != -1:
                 await event.message.respond("feur",)
 
@@ -98,7 +103,7 @@ Prends en parametre un mot et une reponse
 @lightbulb.command("ajout", "Vos mots sous ce format : mot / reponse ")
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def test(ctx):
-    declencheur = ctx.options.declencheur
+    declencheur = ctx.options.declencheur.lower()
     reponse = ctx.options.reponse
     await ctx.respond(str(declencheur)+' : '+ str(reponse))
     with open(__RESPONSE_PATH__, 'r',encoding="utf8") as f:
