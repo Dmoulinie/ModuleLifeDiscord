@@ -141,8 +141,12 @@ async def command_edt(ctx : lightbulb.SlashCommand) -> None:
 
     semaineActuelle = int(ctx.options.semaine) # Nombre de la semaine de l'année actuelle
     # recupere le jour actuel 
-    jourActuel = datetime.datetime.now().strftime("%A")
-    if jourActuel == "Saturday" or jourActuel == "Sunday": # Si le jour est samedi ou dimanche
+    # jourActuel = datetime.datetime.now().strftime("%A")
+    # if (jourActuel == "Saturday" or jourActuel == "Sunday") and ctx.options.semaine != semaineActuelle : # Si le jour est samedi ou dimanche
+    #     semaineActuelle += 1  # Ancienne méthode
+
+    jour_en_utc_11 = int((datetime.datetime.utcnow() + datetime.timedelta(hours=11)).weekday() + 1) # Jour actuel en UTC+11 [1-7]
+    if (jour_en_utc_11 == 6 or jour_en_utc_11 == 7) and ctx.options.semaine != semaineActuelle : # Si le jour est samedi ou dimanche
         semaineActuelle += 1 
 
     if str(semaineActuelle)[0] == '0': # Si la semaine est inférieur à 10
