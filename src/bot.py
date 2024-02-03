@@ -177,7 +177,7 @@ async def command_edt(ctx : lightbulb.SlashCommand) -> None:
         img.compression_quality = 99
         img.save(filename=f'{__PLANNING_PATH__}/edt.jpeg')
 
-        embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"Semaine {semaineActuelle} - {dicoSemestre[ctx.options.semestre]}", color=0x00FF00)
+        embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"{dicoSemestre[ctx.options.semestre]} - Semaine {semaineActuelle}", color=0x00FF00)
         embed.set_image(f"{__PLANNING_PATH__}/edt.jpeg")
         await ctx.respond(embed)
     clearPlanningFolder()
