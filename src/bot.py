@@ -122,6 +122,15 @@ async def command_time(ctx : lightbulb.SlashCommand) -> None:
     await ctx.respond(f"il est {datetime.datetime.now()}")
 
 
+@__BOT__.command()
+@lightbulb.option("utc", "Le décalage en UTC", int, required=True)
+@lightbulb.command("tempsTZ", "Donne l'heure en timezone")
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def command_time(ctx : lightbulb.SlashCommand) -> None:
+    tz = datetime.datetime.utcnow() + datetime.timedelta(hours=ctx.options.utc)
+    await ctx.respond(f"il est {tz}")
+
+
 def clearPlanningFolder():
     for filename in os.listdir(__PLANNING_PATH__):
         if (filename in ["edt.pdf", "edt.jpeg"]):
