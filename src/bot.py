@@ -114,6 +114,12 @@ async def test(ctx):
     with open(__RESPONSE_PATH__, 'w',encoding="utf8") as f:
         json.dump(switcher, f, indent=4, ensure_ascii=False)
 
+@__BOT__.command()
+@lightbulb.command("temps", "Donne l'heure")
+# @lightbulb.implements(lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def command_time(ctx : lightbulb.SlashCommand) -> None:
+    await ctx.respond(f"il est {datetime.datetime.now()}")
 
 
 def clearPlanningFolder():
