@@ -2,7 +2,12 @@
 
 ## On verifie que le service docker est start
 
+## Todo pour semestre 6 
 
+- Aller sur emploit du temps unc
+- Récuperer le lien des pdf du semestre 6 par le network
+- Rajouter choice dans option du semestre
+- Rajouter la clé "S6" dans la variable dico
 
 ## On build l'image du bot :
 ### A la racine du projet tu fais :

@@ -5,6 +5,13 @@ import miru
 from dotenv import load_dotenv
 import json
 
+
+
+import requests
+import datetime
+from wand.image import Image
+
+
 #--------------------GLOBAL_PATH--------------------
 __FILE_PATH__ = os.path.dirname(os.path.abspath(__file__)) # <--- Absolute path to this file
 
@@ -21,6 +28,9 @@ __CLASS_PATH__ = os.path.join(__PARENT_PATH__, 'classes') # <--- Absolute path t
 __JSON_PATH__ = os.path.join(__ASSETS_PATH__, 'json') # <--- Absolute path to the json directory
 
 __RESPONSE_PATH__ = os.path.join(__JSON_PATH__, 'response.json') # <--- Absolute path to the response.json file in the json directory
+
+__PLANNING_PATH__ = os.path.join(__ASSETS_PATH__, "planning") # <--- Absolute path to the planning directory
+
 
 
 """
@@ -46,7 +56,8 @@ Si le message contient "quoi" alors le bot repond "feur"
 """
 @__BOT__.listen(hikari.GuildMessageCreateEvent)
 async def print_message(event):
-    message = event.content.lower()
+    if event.content:
+        message = event.content.lower()
 
     if not event.is_human:
         return
@@ -76,15 +87,6 @@ async def print_message(event):
 
 
 @__BOT__.command()
-@lightbulb.option("text", "Le texte a dire", str, required=True)
-@lightbulb.command("say", "Dit ce que tu veux")
-# @lightbulb.implements(lightbulb.SlashCommand)
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def command_say(ctx : lightbulb.SlashCommand) -> None:
-    await ctx.respond(ctx.options.text)
-
-
-@__BOT__.command()
 @lightbulb.command("cfq", "Demande ça fait quoi")
 # @lightbulb.implements(lightbulb.SlashCommand)
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
@@ -111,6 +113,79 @@ async def test(ctx):
     switcher[declencheur] = reponse
     with open(__RESPONSE_PATH__, 'w',encoding="utf8") as f:
         json.dump(switcher, f, indent=4, ensure_ascii=False)
+
+
+
+def clearPlanningFolder():
+    for filename in os.listdir(__PLANNING_PATH__):
+        if (filename in ["edt.pdf", "edt.jpeg"]):
+            os.remove(os.path.join(__PLANNING_PATH__, filename))
+
+@__BOT__.command()
+@lightbulb.option(
+    "semestre",
+    "votre semestre.",
+    choices=[
+        hikari.CommandChoice(name="Semestre 7", value="S7"),
+        hikari.CommandChoice(name="Semestre 5", value="S5"),
+    ],
+    type=str,
+)
+@lightbulb.option("semaine", "donne l'emploi du temps de la semaine voulu.", type=int, required=False, default=datetime.datetime.now().strftime("%V"))
+@lightbulb.command("edt", "Recupere l'emploi du temps")
+# @lightbulb.implements(lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def command_edt(ctx : lightbulb.SlashCommand) -> None:
+    
+    clearPlanningFolder()
+
+    semaineActuelle = int(ctx.options.semaine) # Nombre de la semaine de l'année actuelle
+    # recupere le jour actuel 
+    jourActuel = datetime.datetime.now().strftime("%A")
+    if jourActuel == "Saturday" or jourActuel == "Sunday": # Si le jour est samedi ou dimanche
+        semaineActuelle += 1 
+
+    if str(semaineActuelle)[0] == '0': # Si la semaine est inférieur à 10
+        semaineActuelle = semaineActuelle[1:] # Enlever le 0 au début
+
+    semaineDebutUniv = int(semaineActuelle) - 6 # Semaine de l'année universitaire 
+    dico = {
+        "S7": "https://applis.univ-nc.nc/gedfs/edtweb2/2401310814.{semaineDebutUniv}/PDF_EDT_17435_{semaineActuelle}_2024.pdf",
+        "S5": "https://applis.univ-nc.nc/gedfs/edtweb2/2401310810.{semaineDebutUniv}/PDF_EDT_17865_{semaineActuelle}_2024.pdf"
+    }
+
+
+    x = requests.get(dico[ctx.options.semestre].format(semaineDebutUniv=semaineDebutUniv, semaineActuelle=semaineActuelle))
+    if (x.status_code == 404):
+        await ctx.respond(f"L'emploi du temps n'est pas encore disponible pour la semaine {semaineActuelle}")
+        return
+
+    with open(f'{__PLANNING_PATH__}/edt.pdf', 'wb') as f:
+        f.write(x.content)
+            
+    dicoSemestre = {
+        "S7": "Semestre 7",
+        "S5": "Semestre 5"
+    }
+
+
+    with Image(filename=f'{__PLANNING_PATH__}/edt.pdf', resolution=200) as img:
+        img.compression_quality = 99
+        img.save(filename=f'{__PLANNING_PATH__}/edt.jpeg')
+
+        embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"Semaine {semaineActuelle} - {dicoSemestre[ctx.options.semestre]}", color=0x00FF00)
+        embed.set_image(f"{__PLANNING_PATH__}/edt.jpeg")
+        await ctx.respond(embed)
+    clearPlanningFolder()
+
+
+
+dico = {
+    "L3 - S7": "17435",
+    "L3 - S5": "17865"
+}
+
+
 
 
 """

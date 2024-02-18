@@ -10,5 +10,16 @@ COPY . .
 # Installer les dépendances requises pour l'application
 RUN pip install -r requirements.txt
 
+# Install required packages
+RUN apk add --no-cache \
+        ghostscript \
+        poppler-utils \
+        imagemagick \
+        imagemagick-dev \
+        build-base \
+        libffi-dev \
+        cairo-dev 
+
+
 # Définir la commande pour lancer l'application
 CMD ["python", "src/bot.py"]
