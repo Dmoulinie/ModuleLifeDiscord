@@ -114,11 +114,26 @@ async def test(ctx):
     with open(__RESPONSE_PATH__, 'w',encoding="utf8") as f:
         json.dump(switcher, f, indent=4, ensure_ascii=False)
 
+@__BOT__.command()
+@lightbulb.command("temps", "Donne l'heure")
+# @lightbulb.implements(lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def command_time(ctx : lightbulb.SlashCommand) -> None:
+    await ctx.respond(f"il est {datetime.datetime.now()}")
+
+
+@__BOT__.command()
+@lightbulb.option("utc", "Le décalage en UTC", int, required=True)
+@lightbulb.command("tempstz", "Donne l'heure en timezone")
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def command_time_utc(ctx : lightbulb.SlashCommand) -> None:
+    tz = datetime.datetime.utcnow() + datetime.timedelta(hours=ctx.options.utc)
+    await ctx.respond(f"il est {tz}")
 
 
 def clearPlanningFolder():
     for filename in os.listdir(__PLANNING_PATH__):
-        if (filename in ["edt.pdf", "edt.jpeg"]):
+        if (filename in ["edt.pdf", "edt.jpeg", "edt0.jpeg", "edt1.jpeg", "edt2.jpeg", "edt3.jpeg", "edt4.jpeg", "edt5.jpeg", "edt6.jpeg", "edt7.jpeg", "edt8.jpeg", "edt9.jpeg"]):
             os.remove(os.path.join(__PLANNING_PATH__, filename))
 
 @__BOT__.command()
@@ -173,13 +188,27 @@ async def command_edt(ctx : lightbulb.SlashCommand) -> None:
     }
 
 
-    with Image(filename=f'{__PLANNING_PATH__}/edt.pdf', resolution=200) as img:
-        img.compression_quality = 99
-        img.save(filename=f'{__PLANNING_PATH__}/edt.jpeg')
+    with(Image(filename=f"{__PLANNING_PATH__}/edt.pdf",resolution=200)) as source:
+        images=source.sequence
+        pages=len(images)
+        if pages > 1:
+            for i in range(pages):
+                images[i].compression_quality = 99
+                Image(images[i]).save(filename=__PLANNING_PATH__+f'/edt{i}.jpeg')
+            for i in range(pages):
+                images[i].compression_quality = 99
+                Image(images[i]).save(filename=__PLANNING_PATH__+f'/edt{i}.jpeg')
+                embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"Semaine {semaineActuelle} - {dicoSemestre[ctx.options.semestre]} - Page {i+1}/{pages}", color=0x00FF00)
+                embed.set_image(f"{__PLANNING_PATH__}/edt{i}.jpeg")
+                await ctx.respond(embed)
+        else:
+            source.compression_quality = 99
+            source.save(filename=f'{__PLANNING_PATH__}/edt.jpeg')
 
-        embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"{dicoSemestre[ctx.options.semestre]} - Semaine {semaineActuelle}", color=0x00FF00)
-        embed.set_image(f"{__PLANNING_PATH__}/edt.jpeg")
-        await ctx.respond(embed)
+            embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"{dicoSemestre[ctx.options.semestre]} - Semaine {semaineActuelle}", color=0x00FF00)
+            embed.set_image(f"{__PLANNING_PATH__}/edt.jpeg")
+            await ctx.respond(embed)
+
     clearPlanningFolder()
 
 
