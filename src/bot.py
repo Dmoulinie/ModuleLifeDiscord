@@ -133,7 +133,7 @@ async def command_time_utc(ctx : lightbulb.SlashCommand) -> None:
 
 def clearPlanningFolder():
     for filename in os.listdir(__PLANNING_PATH__):
-        if (filename in ["edt.pdf", "edt.jpeg"]):
+        if (filename in ["edt.pdf", "edt.jpeg", "edt0.jpeg", "edt1.jpeg", "edt2.jpeg", "edt3.jpeg", "edt4.jpeg", "edt5.jpeg", "edt6.jpeg", "edt7.jpeg", "edt8.jpeg", "edt9.jpeg"]):
             os.remove(os.path.join(__PLANNING_PATH__, filename))
 
 @__BOT__.command()
@@ -188,13 +188,27 @@ async def command_edt(ctx : lightbulb.SlashCommand) -> None:
     }
 
 
-    with Image(filename=f'{__PLANNING_PATH__}/edt.pdf', resolution=200) as img:
-        img.compression_quality = 99
-        img.save(filename=f'{__PLANNING_PATH__}/edt.jpeg')
+    with(Image(filename=f"{__PLANNING_PATH__}/edt.pdf",resolution=200)) as source:
+        images=source.sequence
+        pages=len(images)
+        if pages > 1:
+            for i in range(pages):
+                images[i].compression_quality = 99
+                Image(images[i]).save(filename=__PLANNING_PATH__+f'/edt{i}.jpeg')
+            for i in range(pages):
+                images[i].compression_quality = 99
+                Image(images[i]).save(filename=__PLANNING_PATH__+f'/edt{i}.jpeg')
+                embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"Semaine {semaineActuelle} - {dicoSemestre[ctx.options.semestre]} - Page {i+1}/{pages}", color=0x00FF00)
+                embed.set_image(f"{__PLANNING_PATH__}/edt{i}.jpeg")
+                await ctx.respond(embed)
+        else:
+            source.compression_quality = 99
+            source.save(filename=f'{__PLANNING_PATH__}/edt.jpeg')
 
-        embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"Semaine {semaineActuelle} - {dicoSemestre[ctx.options.semestre]}", color=0x00FF00)
-        embed.set_image(f"{__PLANNING_PATH__}/edt.jpeg")
-        await ctx.respond(embed)
+            embed = hikari.Embed(title="Emploi du temps - MIAGE", description=f"Semaine {semaineActuelle} - {dicoSemestre[ctx.options.semestre]}", color=0x00FF00)
+            embed.set_image(f"{__PLANNING_PATH__}/edt.jpeg")
+            await ctx.respond(embed)
+            
     clearPlanningFolder()
 
 
