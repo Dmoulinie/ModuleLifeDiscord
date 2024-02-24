@@ -11,6 +11,10 @@ RUN apk add --no-cache \
         libffi-dev \
         cairo-dev 
 
+
+# Définir la timezone sur Nouméa
+RUN echo "Pacific/Noumea" > /etc/timezone
+
 # Définir le répertoire de travail dans l'image
 WORKDIR /app
 
