@@ -14,7 +14,7 @@ RUN apk add --no-cache \
 
 # Définir la timezone sur Nouméa
 RUN echo "Pacific/Noumea" > /etc/timezone
-
+ENV TZ Pacific/Noumea
 # Définir le répertoire de travail dans l'image
 WORKDIR /app
 
