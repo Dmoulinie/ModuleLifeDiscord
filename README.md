@@ -21,3 +21,9 @@ sudo docker build -t bot .
 ```
 docker run -d bot
 ```
+
+## Pour rentrer dans le docker sous linux en CLI:
+
+```
+sudo docker exec -it $(sudo docker ps -q --filter ancestor=bot) sh
+```
