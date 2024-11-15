@@ -69,6 +69,15 @@
     docker compose up -d
     ```
 
+**Note** Pour rentrer dans le container & sync les / commands:
+```
+docker compose exec bot sh
+```
+
+```
+npx ts-node src/deploy-commands.ts
+```
+
 
 ## Todo pour semestre 6
 
