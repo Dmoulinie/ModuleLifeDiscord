@@ -53,6 +53,10 @@
     ```
     docker-compose up -d
     ```
+    ou
+    ```
+    docker compose up -d
+    ```
 
 
 ## Todo pour semestre 6
