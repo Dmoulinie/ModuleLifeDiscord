@@ -1,4 +1,3 @@
-# Utiliser une image officielle Node.js comme image de base
 FROM node:18-alpine
 
 # Définir le répertoire de travail dans le conteneur

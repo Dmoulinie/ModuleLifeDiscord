@@ -8,6 +8,6 @@
     "outDir": "./dist",  // Dossier de sortie pour le JavaScript compilé
     "rootDir": "./src"   // Dossier source contenant les fichiers TypeScript
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

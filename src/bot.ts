@@ -2,7 +2,8 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import dotenv from 'dotenv';
 import loadInteractionCreate from './events/interactionCreate';  // Gestionnaire des interactions
 import loadEventsReady from './events/ready';
-import loadMessageListener from './events/messageListener';
+import loadFeurListener from './events/feurListener';
+import loadFeurKaruta from './events/karutaListener';
 
 dotenv.config();
 
@@ -16,7 +17,8 @@ const bot = new Client({
 });
 
 loadInteractionCreate(bot);
-loadMessageListener(bot);
+loadFeurListener(bot);
+loadFeurKaruta(bot);
 
 const token = process.env.DISCORD_TOKEN;
 if (!token) {
