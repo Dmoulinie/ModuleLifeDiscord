@@ -22,7 +22,7 @@
     GUILD_ID=your_guild_id
     ```
 
-4. Compuler le code:
+4. Compiler le code:
     ```
     npm run build
     ```
