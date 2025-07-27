@@ -4,6 +4,7 @@ import loadInteractionCreate from './events/interactionCreate';  // Gestionnaire
 import loadEventsReady from './events/ready';
 import loadFeurListener from './events/feurListener';
 import loadFeurKaruta from './events/karutaListener';
+import loadFeurkdListener from './events/kdListener';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ const bot = new Client({
 loadInteractionCreate(bot);
 loadFeurListener(bot);
 loadFeurKaruta(bot);
+loadFeurkdListener(bot);
 
 const token = process.env.DISCORD_TOKEN;
 if (!token) {
